@@ -2,11 +2,23 @@
     let email = '';
     let password = '';
     let confirmPass = '';
+    let error = false;
+    let register = false;
+
+    function handleAuthenticate() {
+        if (!email || !password || (register && !confirmPass)) {
+            error = true
+            return
+        }
+    }
 </script>
 
 <div class="authContainer">
     <form>
         <h1>Login</h1>
+        {#if error}
+            <p class="error">The information you have entered is not correct</p>
+        {/if}
         <label>
             <p class={email ? " above" : " center"}>Email</p>
             <input
