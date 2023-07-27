@@ -54,12 +54,12 @@
         {#if register}
         <div>
             <p>Already have an account?</p>
-            <button type="button" on:click={handleRegister}>Login</button>
+            <button on:click={handleRegister}>Login</button>
         </div>
         {:else}
             <div>
                 <p>Don't have an account?</p>
-                <button type="button" on:click={handleRegister}>Register</button>
+                <button on:click={handleRegister}>Register</button>
             </div>
         {/if}
     </div>
@@ -73,20 +73,39 @@
         align-items: center;
         justify-content: center;
         flex: 1;
+        padding: 24px;
     }
 
     form {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 14px;
+
+    }
+
+    form,
+    .options {
         width: 400px;
         max-width: 100%;
         margin: 0 auto;
-        padding: 25px;
     }
 
     form input {
-        width: 100%;
+        width: 100%; 
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 3rem;
+    }
+
+    form label {
+        position: relative;
+        border: 1px solid navy;
+        border-radius: 5px;
+    }
+
+    form input {
         border: none;
         background: transparent;
         color: white;
@@ -98,14 +117,8 @@
         outline: none;
     }
 
-    h1 {
-        text-align: center;
-        font-size: 3rem;
-    }
-
-    form label {
-        position: relative;
-        border: 1px solid navy;
+    form label:focus-within {
+        border-color: blue;
     }
 
     form button {
@@ -152,21 +165,48 @@
     }
     .options {
         padding: 14px 0;
+        overflow: hidden;
+        font-size: 0.9rem;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
     }
     .options > p {
         position: relative;
+        text-align: center;
+        width: fit-content;
+        margin: 0 auto;
+        padding: 0 8px;
     }
-    .options p::after,
-    .options p::before {
+    .options > p::after,
+    .options > p::before {
         position: absolute;
+        content: "";
         top: 50%;
-        left: 0;
         transform: translateY(-50%);
-        width: 100%;
-        heigth: 1.5px;
+        width: 100vw;
+        height: 1.5px;
         background: white;
     }
-    .options p::after {
+
+    .options > p::after {
         right:100%;
+    }
+
+    .options > p::before {
+        left: 100%;
+    }
+
+    .options div {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        justify-content: center;
+    }
+    
+    .options div button {
+        color: navy;
+        cursor: pointer;
     }
 </style>
