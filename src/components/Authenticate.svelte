@@ -11,11 +11,15 @@
             return
         }
     }
+
+    function handleRegister() {
+        register = !register;
+    }
 </script>
 
 <div class="authContainer">
     <form>
-        <h1>Login</h1>
+        <h1>{register ? "Register" : "Login"}</h1>
         {#if error}
             <p class="error">The information you have entered is not correct</p>
         {/if}
@@ -23,7 +27,7 @@
             <p class={email ? " above" : " center"}>Email</p>
             <input
             bind:value={email} 
-            type="Email"
+            type="email"
             placeholder="Email" 
             />
         </label>
@@ -31,7 +35,7 @@
             <p class={password ? " above" : " center"}>Password</p>
             <input 
             bind:value={password}
-            type="Password"
+            type="password"
             placeholder="Password" 
             />
         </label>
@@ -39,12 +43,26 @@
             <p class={confirmPass ? " above" : " center"}>Confirm Password</p>
             <input 
             bind:value={confirmPass}
-            type="Confirm Password" 
+            type="password" 
             placeholder="Confirm Password" 
             />
         </label>
         <button type="button">Submit</button>
     </form>
+    <div class="options">
+        <p>Or</p>
+        {#if register}
+        <div>
+            <p>Already have an account?</p>
+            <button type="button" on:click={handleRegister}>Login</button>
+        </div>
+        {:else}
+            <div>
+                <p>Don't have an account?</p>
+                <button type="button" on:click={handleRegister}>Register</button>
+            </div>
+        {/if}
+    </div>
 </div>
 
 
@@ -127,5 +145,28 @@
         left: 6px;
         border: 1px solid transparent;
         opacity: 0;
+    }
+    .error {
+        color: coral;
+        font-size: 0.9rem;
+    }
+    .options {
+        padding: 14px 0;
+    }
+    .options > p {
+        position: relative;
+    }
+    .options p::after,
+    .options p::before {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
+        width: 100%;
+        heigth: 1.5px;
+        background: white;
+    }
+    .options p::after {
+        right:100%;
     }
 </style>
