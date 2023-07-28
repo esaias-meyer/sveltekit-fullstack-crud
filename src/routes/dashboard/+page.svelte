@@ -11,18 +11,56 @@
         toDoList = [...toDoList, currToDo];
         currToDo = "";
     }
+
+    function editToDo(index) {
+        let newToDoList = toDoList.filter((val, i) => {
+            return i !== index;
+        });
+        currToDo = toDoList[index];
+        toDoList = newToDoList;
+    }
+
+    function removeToDo(index) {
+        let newToDoList = toDoList.filter((val, i) => {
+            return i !== index;
+        });
+        toDoList = newToDoList;
+    }
+
 </script>
 <div class="mainContainer">   
         <div class="headerContainer">
             <h1>Todo List</h1>
-            <button><i class="fa-regular fa-floppy-disk"></i>
+            <div class="headerBtns">
+                <button><i class="fa-regular fa-floppy-disk"></i>
                     <p>Save</p></button
-            >
+            >    
+            <button><i class="fa-solid fa-right-from-bracket"></i>
+                <p>Logout</p></button
+        >
+            </div>
         </div>
     <main>
+        {#if toDoList.length === 0}
+        <p>
+            You have nothing to do!
+        </p>
+        {/if}
         {#each toDoList as todo, index}
             <div class="todo">
-                {index + 1}. {todo}
+                <p>
+                    {index + 1}. {todo}
+                </p>
+                <div class="actions">
+                    <i on:click={() => {
+                        editToDo(index);
+                    }}
+                    on:keydown={() => {}} class="fa-regular fa-pen-to-square"></i>
+                    <i on:click={() => {
+                        removeToDo(index);
+                    }}
+                    on:keydown={() => {}} class="fa-regular fa-trash-can"></i>
+                </div>
             </div>
         {/each}
     </main>
@@ -65,6 +103,12 @@
         cursor: pointer;
     }
 
+    .headerBtns {
+        display: flex;
+        align-items: center;
+        gap: 14px ;
+    }
+
     .headerContainer button i {
         font-size: 1.1rem;
     }
@@ -80,6 +124,28 @@
         flex: 1;
     }
 
+    .todo {
+        border-left: 1px solid cyan;
+        padding: 8px 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .actions {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-size: 1.3rem;
+    }
+
+    .actions i {
+        cursor: pointer;
+    }
+
+    .actions i:hover {
+        color: coral;
+    }
     .enterToDo {
         display: flex;
         align-items: stretch;
