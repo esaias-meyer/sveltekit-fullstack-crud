@@ -13,10 +13,19 @@
     }
 
     function editToDo(index) {
+        // Create a new array 'newToDoList' by filtering out the to-do item at 
+        // the given index.
+        // The filter function checks if the current item's index (i) is not 
+        // equal to the provided index. 
         let newToDoList = toDoList.filter((val, i) => {
             return i !== index;
         });
+        // Save a reference to the to-do item that is being removed, located at 
+        // the given index.
+        // The removed item can be accessed through the 'currToDo' variable.
         currToDo = toDoList[index];
+        // Update the 'toDoList' with the new filtered array, effectively 
+        // removing the item at the given index.
         toDoList = newToDoList;
     }
 

@@ -1,14 +1,32 @@
 <script>
+    import { authHandlers } from "../store/store";
+
     let email = '';
     let password = '';
     let confirmPass = '';
     let error = false;
     let register = false;
+    let authenticating = false;
 
-    function handleAuthenticate() {
+    async function handleAuthenticate() {
+        if (!authenticating) {
+            return;
+        }
         if (!email || !password || (register && !confirmPass)) {
-            error = true
-            return
+            error = true;
+            return;
+        }
+        authenticating = true;
+       
+        try {
+            if (!register) {
+                await authHandlers.login(email, password);
+            } else {
+                await authHandlers.signup(email, password);
+            } 
+        } catch (err) {
+            console.log('There was an auth error', err);
+            error = true;
         }
     }
 
@@ -21,15 +39,12 @@
     <form>
         <h1>{register ? "Register" : "Login"}</h1>
         {#if error}
-            <p class="error">The information you have entered is not correct</p>
+            <p class="error">The information you have entered is not 
+            correct</p>
         {/if}
         <label>
             <p class={email ? " above" : " center"}>Email</p>
-            <input
-            bind:value={email} 
-            type="email"
-            placeholder="Email" 
-            />
+            <input bind:value={email} type="email" placeholder="Email"/>
         </label>
         <label>
             <p class={password ? " above" : " center"}>Password</p>
@@ -39,15 +54,25 @@
             placeholder="Password" 
             />
         </label>
-        <label>
-            <p class={confirmPass ? " above" : " center"}>Confirm Password</p>
-            <input 
-            bind:value={confirmPass}
-            type="password" 
-            placeholder="Confirm Password" 
-            />
-        </label>
-        <button type="button">Submit</button>
+        {#if register}    
+            <label>
+                <p class={confirmPass ? " above" : " center"}>
+                    Confirm Password</p>
+                <input 
+                bind:value={confirmPass}
+                type="password" 
+                placeholder="Confirm Password" 
+                />
+            </label>
+        {/if}
+
+        <button on:click={handleAuthenticate } type="button" class="submitBtn">
+            {#if authenticating}
+                <i class="fa-solid fa-spinner loadingSpinner"></i>                
+            {:else}
+                Submit
+            {/if}
+        </button>
     </form>
     <div class="options">
         <p>Or</p>
@@ -128,7 +153,8 @@
         padding: 10px 0;
         border-radius: 5px;
         cursor: pointer;
-        font-size: 1rem;
+        font-size: 1rem; 
+        place-items: center;
     }
 
     form button:hover {
@@ -162,6 +188,7 @@
     .error {
         color: coral;
         font-size: 0.9rem;
+        text-align: center;
     }
     .options {
         padding: 14px 0;
@@ -208,5 +235,18 @@
     .options div button {
         color: navy;
         cursor: pointer;
+    }
+
+    .loadingSpinner {
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
     }
 </style>
