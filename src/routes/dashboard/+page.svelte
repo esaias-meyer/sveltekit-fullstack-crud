@@ -1,8 +1,17 @@
 <script>
-    let toDoList = ["Get groceries!"]
+    import ToDoItem from "../../components/ToDoItem.svelte";
+    import { db } from "../../lib/firebase/firebase";
+    import { authHandlers, authStore } from "../../store/store";
+    import { getDoc, doc , setDoc } from 'firebase/firestore';
+
+
+    let toDoList = []
     let currToDo = "";
     let error = false;
 
+    authStore.subscribe((curr) => {
+        toDoList = curr.data.todos;
+    })
     function addToDo() {
         error = false;
         if (!currToDo) {
@@ -36,15 +45,32 @@
         toDoList = newToDoList;
     }
 
+    async function saveToDos() {
+        try {
+            const userRef = doc(db, "users", $authStore.user.uid);
+            await setDoc(
+                userRef,
+                {
+                        todos: toDoList,        
+                },
+                { merge: true } // prevent overriding email already saved
+            );
+        } catch (err) { 
+            console.log('There was an error saving your information');
+        }
+    }
 </script>
+
+{#if !$authStore.loading}
+
 <div class="mainContainer">   
         <div class="headerContainer">
             <h1>Todo List</h1>
             <div class="headerBtns">
-                <button><i class="fa-regular fa-floppy-disk"></i>
+                <button on:click={saveToDos }><i class="fa-regular fa-floppy-disk"></i>
                     <p>Save</p></button
             >    
-            <button><i class="fa-solid fa-right-from-bracket"></i>
+            <button on:click={authHandlers.logout}><i class="fa-solid fa-right-from-bracket"></i>
                 <p>Logout</p></button
         >
             </div>
@@ -56,21 +82,7 @@
         </p>
         {/if}
         {#each toDoList as todo, index}
-            <div class="todo">
-                <p>
-                    {index + 1}. {todo}
-                </p>
-                <div class="actions">
-                    <i on:click={() => {
-                        editToDo(index);
-                    }}
-                    on:keydown={() => {}} class="fa-regular fa-pen-to-square"></i>
-                    <i on:click={() => {
-                        removeToDo(index);
-                    }}
-                    on:keydown={() => {}} class="fa-regular fa-trash-can"></i>
-                </div>
-            </div>
+            <ToDoItem todo={todo} index={index} removeToDo={removeToDo} editToDo={editToDo} />
         {/each}
     </main>
     <div class={"enterToDo " + (error ? 'errorBorder' : "")}>
@@ -78,7 +90,7 @@
         <button on:click={addToDo}>ADD</button>
     </div>
 </div>
-
+{/if}
 
 <style>
     .mainContainer {
@@ -133,36 +145,6 @@
         flex: 1;
     }
 
-    .todo {
-        border-left: 1px solid cyan;
-        padding: 8px 14px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .actions {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        font-size: 1.3rem;
-    }
-
-    .actions i {
-        cursor: pointer;
-    }
-
-    .actions i:hover {
-        color: coral;
-    }
-    .enterToDo {
-        display: flex;
-        align-items: stretch;
-        border: 1px solid #0891b2;
-        border-radius: 5px;
-        overflow: hidden;
-    }
-
     .errorBorder {
         border-color: coral !important;
     }
@@ -188,6 +170,13 @@
     }
     .enterToDo button:hover { 
         background: transparent;
+    }
+    .enterToDo {
+        display: flex;
+        align-items: stretch;
+        border: 1px solid #0891b2;
+        border-radius: 5px;
+        overflow: hidden;
     }
 
 </style>

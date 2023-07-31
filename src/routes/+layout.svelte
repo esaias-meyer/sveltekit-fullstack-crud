@@ -3,6 +3,7 @@
     import { auth, db } from '../lib/firebase/firebase';
     import { getDoc, doc , setDoc } from 'firebase/firestore';
     import { authStore } from '../store/store';
+   
     const nonAuthRoutes = ['/', 'product'];
 
     onMount(() => {
@@ -28,7 +29,7 @@
             const docRef = doc(db, 'users', user.uid);
             const docSnap = await getDoc(docRef);
             if (!docSnap.exists()) {
-                const userRef = doc(db, "user", user.uid);
+                const userRef = doc(db, "users", user.uid);
                 dataToSetToStore = {
                     email: user.email, 
                     todos: [],                    

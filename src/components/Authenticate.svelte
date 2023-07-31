@@ -9,7 +9,7 @@
     let authenticating = false;
 
     async function handleAuthenticate() {
-        if (!authenticating) {
+        if (authenticating) {
             return;
         }
         if (!email || !password || (register && !confirmPass)) {
@@ -17,7 +17,7 @@
             return;
         }
         authenticating = true;
-       
+        
         try {
             if (!register) {
                 await authHandlers.login(email, password);
@@ -27,6 +27,7 @@
         } catch (err) {
             console.log('There was an auth error', err);
             error = true;
+            authenticating = false;
         }
     }
 
